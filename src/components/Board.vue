@@ -19,10 +19,10 @@ import Frame from "./Frame.vue";
 })
 export default class Board extends Vue {
   @Prop() name!: string;
-  private refs = [...Array(10)].map((_, i) => "frame" + i);
-  private rolls: number[] = [];
   private currentFrameIndex = 0;
   private isMounted = false;
+  private refs = [...Array(10)].map((_, i) => "frame" + i);
+  private rolls: number[] = [];
 
   mounted() {
     this.isMounted = true;
@@ -33,7 +33,7 @@ export default class Board extends Vue {
     return lastFrameRef[0];
   }
 
-  private get total() {
+  get total() {
     if (!this.isMounted) return null;
     if (this.currentFrameIndex === 10) {
       return this.lastFrame.total;
