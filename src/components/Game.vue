@@ -6,6 +6,7 @@
     </form>
     <div v-if="isCompleted()">
       <h3>{{ winner }} won!</h3>
+      <button @click="reset()">Reset game</button>
     </div>
     <div v-else-if="isStarted && !isRandomGame" class="buttons">
       <button @click="rollRandom()">Random</button>
@@ -105,6 +106,16 @@ export default class Game extends Vue {
       this.currentBoardIndex =
         (this.currentBoardIndex + 1) % this.players.length;
     }
+  }
+
+  private reset() {
+    this.players.forEach((_, i) => {
+      const ref = this.$refs["board" + i] as Board[];
+      ref[0].reset();
+    });
+    this.currentBoardIndex = 0;
+    this.isStarted = false;
+    this.isRandomGame = false;
   }
 
   private isCompleted() {

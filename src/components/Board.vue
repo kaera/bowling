@@ -59,11 +59,19 @@ export default class Board extends Vue {
     }
     const rollIndex = this.rolls.length;
     this.rolls.push(value);
-    // console.log("Player rolls ball #", rollIndex, "value", value);
     this.currentFrame.roll(value, rollIndex);
     if (this.currentFrame.isCompleted()) {
       this.currentFrameIndex++;
     }
+  }
+
+  reset() {
+    this.rolls = [];
+    this.currentFrameIndex = 0;
+    this.refs.forEach((ref) => {
+      const frameRef = this.$refs[ref] as Frame[];
+      frameRef[0].reset();
+    });
   }
 }
 </script>

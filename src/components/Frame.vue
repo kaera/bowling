@@ -19,7 +19,7 @@ export default class Frame extends Vue {
   @Prop() rolls!: number[];
   pins = 10;
   private scores: number[] = [];
-  private rollIndex!: number;
+  private rollIndex: number | null = null;
 
   private format(value: number) {
     switch (value) {
@@ -54,15 +54,15 @@ export default class Frame extends Vue {
       return (
         prevTotal +
         this.scores[0] +
-        this.rolls[this.rollIndex + 1] +
-        this.rolls[this.rollIndex + 2]
+        this.rolls[(this.rollIndex || 0) + 1] +
+        this.rolls[(this.rollIndex || 0) + 2]
       );
     }
 
     const total = this.scores[0] + this.scores[1];
     if (total === 10) {
       // spare
-      return prevTotal + total + this.rolls[this.rollIndex + 2];
+      return prevTotal + total + this.rolls[(this.rollIndex || 0) + 2];
     }
 
     if (total < 10) {
@@ -85,9 +85,15 @@ export default class Frame extends Vue {
     if (this.index === 9 && this.pins === 0) {
       this.pins = 10;
     }
-    if (!this.rollIndex) {
+    if (this.rollIndex == null) {
       this.rollIndex = rollIndex;
     }
+  }
+
+  reset() {
+    this.pins = 10;
+    this.scores = [];
+    this.rollIndex = null;
   }
 }
 </script>
