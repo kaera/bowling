@@ -1,6 +1,15 @@
 <template>
-  <div>
-    <table class="game">
+  <div class="game">
+    <h3 v-if="isCompleted()">Game over</h3>
+    <div v-else class="buttons">
+      <button @click="rollRandom()">Random</button>
+      <button v-for="(_, i) in buttonsNum" :key="i" @click="roll(i)">
+        {{ i }}
+      </button>
+      <br />
+      <button @click="runRandomGame()">Run Random Game</button>
+    </div>
+    <table>
       <tr>
         <th>Player Name</th>
         <th v-for="i in 10" :key="i">{{ i }}</th>
@@ -23,9 +32,15 @@ import Board from "./Board.vue";
   },
 })
 export default class Game extends Vue {
-  private playersNum = 2;
+  private playersNum = 3;
   private refs = [...Array(this.playersNum)].map((_, i) => "board" + i);
   private currentBoardIndex = 0;
+  private isMounted = false;
+
+  private get buttonsNum(): number {
+    if (!this.isMounted || !this.currentBoard.currentFrame) return 0;
+    return this.currentBoard.currentFrame.pins + 1;
+  }
 
   get currentBoard() {
     const ref = this.$refs["board" + this.currentBoardIndex] as Board[];
@@ -33,27 +48,38 @@ export default class Game extends Vue {
   }
 
   async mounted() {
-    while (!this.isCompleted()) {
-      const currentFrame = this.currentBoard.currentFrame;
-      while (currentFrame === this.currentBoard.currentFrame) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-        const value =
-          (Math.random() * (this.currentBoard.currentFrame.pins + 1)) | 0;
-        // console.log(
-        //   "Player",
-        //   this.currentBoardIndex + 1,
-        //   "knocks down",
-        //   value,
-        //   "pins"
-        // );
+    this.isMounted = true;
+  }
 
-        this.currentBoard.roll(value);
-      }
+  private async runRandomGame() {
+    while (!this.isCompleted()) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      this.rollRandom();
+    }
+  }
+
+  private rollRandom() {
+    this.roll((Math.random() * this.buttonsNum) | 0);
+  }
+
+  private roll(value: number) {
+    // console.log(
+    //   "Player",
+    //   this.currentBoardIndex + 1,
+    //   "knocks down",
+    //   value,
+    //   "pins"
+    // );
+    const currentFrame = this.currentBoard.currentFrame;
+
+    this.currentBoard.roll(value);
+    if (currentFrame !== this.currentBoard.currentFrame) {
       this.currentBoardIndex = (this.currentBoardIndex + 1) % this.refs.length;
     }
   }
 
   isCompleted() {
+    if (!this.isMounted) return false;
     const lastBoardRef = this.$refs[
       "board" + (this.refs.length - 1)
     ] as Board[];
@@ -64,7 +90,14 @@ export default class Game extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-table.game {
+.game {
+  width: 900px;
+}
+.game button {
+  margin: 5px 8px;
+  padding: 5px 20px;
+}
+.game table {
   border: 1px solid;
   border-collapse: collapse;
 }
@@ -75,5 +108,9 @@ table.game {
 .game td {
   padding: 0;
   border: 1px solid;
+}
+
+.buttons {
+  text-align: left;
 }
 </style>

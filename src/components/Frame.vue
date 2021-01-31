@@ -5,7 +5,7 @@
       <div class="score">{{ secondScore }}</div>
       <div class="score" v-if="index === 9">{{ format(scores[2]) }}</div>
     </div>
-    <div class="total">{{ total }}</div>
+    <div class="total">{{ total || "" }}</div>
   </div>
 </template>
 
