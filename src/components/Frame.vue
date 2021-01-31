@@ -1,12 +1,11 @@
 <template>
   <div>
-    <p>
-      <span>{{ firstScore }}</span> | <span>{{ secondScore }}</span>
-      <template v-if="index === 9">
-        | <span>{{ thirdScore }}</span>
-      </template>
-    </p>
-    <p>{{ total || "" }}</p>
+    <div class="scores">
+      <div class="score">{{ format(scores[0]) }}</div>
+      <div class="score">{{ secondScore }}</div>
+      <div class="score" v-if="index === 9">{{ format(scores[2]) }}</div>
+    </div>
+    <div class="total">{{ total }}</div>
   </div>
 </template>
 
@@ -22,25 +21,26 @@ export default class Frame extends Vue {
   private scores: number[] = [];
   private rollIndex!: number;
 
-  private get prevFrame() {
-    return this.refs["frame" + (this.index - 1)]?.[0];
+  private format(value: number) {
+    switch (value) {
+      case 0:
+        return "-";
+      case 10:
+        return "X";
+      default:
+        return value;
+    }
   }
 
-  private get firstScore() {
-    return this.scores[0] === 10 ? "X" : this.scores[0];
+  get prevFrame() {
+    return this.refs["frame" + (this.index - 1)]?.[0];
   }
 
   private get secondScore() {
     if (this.scores[0] + this.scores[1] === 10) {
       return "/";
     }
-    if (this.scores[1] === 10) {
-      return "X";
-    }
-    if (this.scores[1] === 0) {
-      return "-";
-    }
-    return this.scores[1];
+    return this.format(this.scores[1]);
   }
 
   private get thirdScore() {
@@ -92,4 +92,19 @@ export default class Frame extends Vue {
 }
 </script>
 
-<style></style>
+<style scoped>
+.scores {
+  display: flex;
+}
+.score {
+  width: 30px;
+  height: 25px;
+}
+.score + .score {
+  border-style: solid;
+  border-width: 0 0 1px 1px;
+}
+.total {
+  height: 25px;
+}
+</style>

@@ -1,9 +1,15 @@
 <template>
   <div>
-    <div v-for="ref in refs" :key="ref">
-      {{ ref }}
-      <Board :ref="ref" />
-    </div>
+    <table class="game">
+      <tr>
+        <th>Player Name</th>
+        <th v-for="i in 10" :key="i">{{ i }}</th>
+        <th>Total score</th>
+      </tr>
+      <template v-for="(ref, i) in refs">
+        <Board :key="ref" :name="'player' + i" :ref="ref" />
+      </template>
+    </table>
   </div>
 </template>
 
@@ -30,16 +36,16 @@ export default class Game extends Vue {
     while (!this.isCompleted()) {
       const currentFrame = this.currentBoard.currentFrame;
       while (currentFrame === this.currentBoard.currentFrame) {
-        await new Promise((resolve) => setTimeout(resolve, 20));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         const value =
           (Math.random() * (this.currentBoard.currentFrame.pins + 1)) | 0;
-        console.log(
-          "Player",
-          this.currentBoardIndex + 1,
-          "knocks down",
-          value,
-          "pins"
-        );
+        // console.log(
+        //   "Player",
+        //   this.currentBoardIndex + 1,
+        //   "knocks down",
+        //   value,
+        //   "pins"
+        // );
 
         this.currentBoard.roll(value);
       }
@@ -57,4 +63,17 @@ export default class Game extends Vue {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped></style>
+<style>
+table.game {
+  border: 1px solid;
+  border-collapse: collapse;
+}
+.game th {
+  padding: 2px 5px;
+  border: 1px solid;
+}
+.game td {
+  padding: 0;
+  border: 1px solid;
+}
+</style>

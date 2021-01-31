@@ -1,18 +1,15 @@
 <template>
-  <div>
-    Game board
-    <table>
-      <tr>
-        <td v-for="(ref, i) in refs" :key="i">
-          <Frame :index="i" :ref="ref" :refs="$refs" :rolls="rolls" />
-        </td>
-      </tr>
-    </table>
-  </div>
+  <tr>
+    <td>{{ name }}</td>
+    <td v-for="(ref, i) in refs" :key="i">
+      <Frame :index="i" :ref="ref" :refs="$refs" :rolls="rolls" />
+    </td>
+    <td>{{ total }}</td>
+  </tr>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue } from "vue-property-decorator";
 import Frame from "./Frame.vue";
 
 @Component({
@@ -21,9 +18,30 @@ import Frame from "./Frame.vue";
   },
 })
 export default class Board extends Vue {
+  @Prop() name!: string;
   private refs = [...Array(10)].map((_, i) => "frame" + i);
   private rolls: number[] = [];
   private currentFrameIndex = 0;
+  private isMounted = false;
+
+  mounted() {
+    this.isMounted = true;
+  }
+
+  private get lastFrame() {
+    const lastFrameRef = this.$refs.frame9 as Frame[];
+    return lastFrameRef[0];
+  }
+
+  private get total() {
+    if (!this.isMounted) return null;
+    if (this.currentFrameIndex === 10) {
+      return this.lastFrame.total;
+    }
+    let lastFrame = this.currentFrame;
+    while (lastFrame && !lastFrame.total) lastFrame = lastFrame.prevFrame;
+    return lastFrame && lastFrame.total;
+  }
 
   get currentFrame() {
     const ref = this.$refs["frame" + this.currentFrameIndex] as Frame[];
@@ -31,8 +49,7 @@ export default class Board extends Vue {
   }
 
   isCompleted() {
-    const lastFrameRef = this.$refs.frame9 as Frame[];
-    return lastFrameRef[0].isCompleted();
+    return this.lastFrame.isCompleted();
   }
 
   roll(value: number) {
@@ -51,9 +68,4 @@ export default class Board extends Vue {
 }
 </script>
 
-<style scoped>
-table,
-td {
-  border: 1px solid;
-}
-</style>
+<style scoped></style>
