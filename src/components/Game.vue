@@ -2,11 +2,11 @@
   <div class="game">
     <form v-if="!isStarted" @submit="addPlayer($event)">
       <input ref="input" value="John Doe" />
-      <button>Add player</button>
+      <button>Add Player</button>
     </form>
     <div v-if="isCompleted()">
       <h3>{{ winner }} won!</h3>
-      <button @click="reset()">Reset game</button>
+      <button @click="reset()">Reset Game</button>
     </div>
     <div v-else-if="isStarted && !isRandomGame" class="buttons">
       <button @click="rollRandom()">Random</button>
