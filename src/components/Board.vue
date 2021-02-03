@@ -54,7 +54,7 @@ export default class Board extends Vue {
 
   roll(value: number) {
     if (value > this.currentFrame.pins) {
-      console.error("not enough pins");
+      console.error("Not enough pins");
       return;
     }
     const rollIndex = this.rolls.length;
@@ -76,4 +76,9 @@ export default class Board extends Vue {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.game td {
+  padding: 0;
+  border: 1px solid;
+}
+</style>

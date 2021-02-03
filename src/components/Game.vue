@@ -129,9 +129,10 @@ export default class Game extends Vue {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
+<style scoped>
 .game {
   width: 900px;
+  text-align: center;
 }
 .game button {
   margin: 5px 8px;
@@ -146,11 +147,6 @@ export default class Game extends Vue {
   border: 1px solid;
   min-width: 51px;
 }
-.game td {
-  padding: 0;
-  border: 1px solid;
-}
-
 .buttons {
   text-align: left;
 }
