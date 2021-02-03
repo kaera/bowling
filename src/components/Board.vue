@@ -77,8 +77,9 @@ export default class Board extends Vue {
 </script>
 
 <style scoped>
-.game td {
+td {
   padding: 0;
   border: 1px solid;
+  text-align: center;
 }
 </style>
