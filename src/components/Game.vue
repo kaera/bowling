@@ -66,7 +66,7 @@ export default class Game extends Vue {
     return this.players
       .map((name, i) => {
         const ref = this.$refs["board" + i] as Board[];
-        return { name, total: ref[0].total! };
+        return { name, total: ref[0].total || 0 };
       })
       .sort((a, b) => b.total - a.total)[0].name;
   }

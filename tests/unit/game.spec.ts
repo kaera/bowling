@@ -1,9 +1,8 @@
 import { mount, Wrapper } from "@vue/test-utils";
 import Game from "@/components/Game.vue";
-import Board from "@/components/Board.vue";
 
 describe("Game.vue", () => {
-  let wrapper: Wrapper<Board>;
+  let wrapper: Wrapper<Game>;
 
   beforeEach(() => {
     wrapper = mount(Game);
@@ -54,7 +53,7 @@ describe("Game.vue", () => {
     expect(
       wrapper
         .findAll("button")
-        .filter((button) => button.text() === "Start Game").length
+        .filter((button) => button.text() === "Start Game").length,
     ).toBe(0);
   });
 
@@ -77,7 +76,7 @@ describe("Game.vue", () => {
     expect(
       wrapper
         .findAll("button")
-        .filter((button) => button.text() === "Reset Game").length
+        .filter((button) => button.text() === "Reset Game").length,
     ).toBe(1);
   });
 });
