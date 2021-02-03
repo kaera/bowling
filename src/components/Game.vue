@@ -5,8 +5,12 @@
       <button>Add Player</button>
     </form>
     <div v-if="isCompleted()">
-      <h3>{{ winner }} won!</h3>
+      <h3>{{ winner ? winner + " won!" : "Tie!" }}</h3>
       <button @click="reset()">Reset Game</button>
+      <p>Total number of wins:</p>
+      <p v-for="player in players" :key="player.name">
+        {{ player.name }}: {{ player.wins + (player.name === winner ? 1 : 0) }}
+      </p>
     </div>
     <div v-else-if="isStarted && !isRandomGame" class="buttons">
       <button @click="rollRandom()">Random</button>
@@ -24,8 +28,8 @@
         <th v-for="i in 10" :key="i">{{ i }}</th>
         <th>Total score</th>
       </tr>
-      <template v-for="(name, i) in players">
-        <Board :key="i" :name="name" :ref="'board' + i" />
+      <template v-for="(player, i) in players">
+        <Board :key="i" :name="player.name" :ref="'board' + i" />
       </template>
     </table>
   </div>
@@ -41,7 +45,7 @@ import Board from "./Board.vue";
   },
 })
 export default class Game extends Vue {
-  private players: string[] = [];
+  private players: { name: string; wins: number }[] = [];
   private currentBoardIndex = 0;
   private isMounted = false;
   private isStarted = false;
@@ -63,19 +67,26 @@ export default class Game extends Vue {
   }
 
   private get winner() {
-    return this.players
-      .map((name, i) => {
+    const sortedPlayers = this.players
+      .map(({ name }, i) => {
         const ref = this.$refs["board" + i] as Board[];
         return { name, total: ref[0].total || 0 };
       })
-      .sort((a, b) => b.total - a.total)[0].name;
+      .sort((a, b) => b.total - a.total);
+    if (sortedPlayers[0].total === sortedPlayers[1]?.total) {
+      // Tie
+      return null;
+    }
+    return sortedPlayers[0].name;
   }
 
   private addPlayer(e: Event) {
     e.preventDefault();
     const input = this.$refs.input as HTMLInputElement;
-    this.players.push(input.value);
-    input.value = "";
+    if (input.value && !this.players.find(({ name }) => name === input.value)) {
+      this.players.push({ name: input.value, wins: 0 });
+      input.value = "";
+    }
   }
 
   private async runRandomGame() {
@@ -109,9 +120,13 @@ export default class Game extends Vue {
   }
 
   private reset() {
-    this.players.forEach((_, i) => {
+    const winner = this.winner;
+    this.players.forEach((player, i) => {
       const ref = this.$refs["board" + i] as Board[];
       ref[0].reset();
+      if (player.name === winner) {
+        player.wins++;
+      }
     });
     this.currentBoardIndex = 0;
     this.isStarted = false;
