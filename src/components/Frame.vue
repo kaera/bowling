@@ -16,7 +16,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 export default class Frame extends Vue {
   @Prop() index!: number;
   @Prop() refs!: { [key: string]: Frame[] };
-  @Prop() rolls!: number[];
+  @Prop() allRolls!: number[];
   pins = 10;
   private scores: number[] = [];
   private rollIndex: number | null = null;
@@ -54,15 +54,15 @@ export default class Frame extends Vue {
       return (
         prevTotal +
         this.scores[0] +
-        this.rolls[(this.rollIndex || 0) + 1] +
-        this.rolls[(this.rollIndex || 0) + 2]
+        this.allRolls[(this.rollIndex || 0) + 1] +
+        this.allRolls[(this.rollIndex || 0) + 2]
       );
     }
 
     const total = this.scores[0] + this.scores[1];
     if (total === 10) {
       // spare
-      return prevTotal + total + this.rolls[(this.rollIndex || 0) + 2];
+      return prevTotal + total + this.allRolls[(this.rollIndex || 0) + 2];
     }
 
     if (total < 10) {

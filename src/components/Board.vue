@@ -2,7 +2,7 @@
   <tr>
     <td>{{ name }}</td>
     <td v-for="(ref, i) in refs" :key="i">
-      <Frame :index="i" :ref="ref" :refs="$refs" :rolls="rolls" />
+      <Frame :index="i" :ref="ref" :refs="$refs" :allRolls="allRolls" />
     </td>
     <td>{{ total }}</td>
   </tr>
@@ -22,7 +22,7 @@ export default class Board extends Vue {
   private currentFrameIndex = 0;
   private isMounted = false;
   private refs = [...Array(10)].map((_, i) => "frame" + i);
-  private rolls: number[] = [];
+  private allRolls: number[] = [];
 
   mounted() {
     this.isMounted = true;
@@ -57,8 +57,8 @@ export default class Board extends Vue {
       console.error("Not enough pins");
       return;
     }
-    const rollIndex = this.rolls.length;
-    this.rolls.push(value);
+    const rollIndex = this.allRolls.length;
+    this.allRolls.push(value);
     this.currentFrame.roll(value, rollIndex);
     if (this.currentFrame.isCompleted()) {
       this.currentFrameIndex++;
@@ -66,7 +66,7 @@ export default class Board extends Vue {
   }
 
   reset() {
-    this.rolls = [];
+    this.allRolls = [];
     this.currentFrameIndex = 0;
     this.refs.forEach((ref) => {
       const frameRef = this.$refs[ref] as Frame[];

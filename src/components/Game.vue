@@ -67,17 +67,19 @@ export default class Game extends Vue {
   }
 
   private get winner() {
-    const sortedPlayers = this.players
-      .map(({ name }, i) => {
-        const ref = this.$refs["board" + i] as Board[];
-        return { name, total: ref[0].total || 0 };
-      })
-      .sort((a, b) => b.total - a.total);
-    if (sortedPlayers[0].total === sortedPlayers[1]?.total) {
-      // Tie
-      return null;
-    }
-    return sortedPlayers[0].name;
+    const map: { [n: number]: string[] } = {};
+    let maxTotal = 0;
+    this.players.forEach(({ name }, i) => {
+      const ref = this.$refs["board" + i] as Board[];
+      const total = ref[0].total || 0;
+      if (!map[total]) {
+        map[total] = [];
+      }
+      map[total].push(name);
+      maxTotal = Math.max(maxTotal, total);
+    });
+    const winners = map[maxTotal];
+    return winners.length > 1 ? null : winners[0];
   }
 
   private addPlayer(e: Event) {
