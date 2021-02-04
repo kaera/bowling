@@ -36,7 +36,12 @@
       </thead>
       <tbody>
         <template v-for="(player, i) in players">
-          <Board :key="i" :name="player.name" :ref="'board' + i" />
+          <Board
+            :key="i"
+            :name="player.name"
+            :ref="'board' + i"
+            :isCurrent="i === currentBoardIndex && isStarted && !isCompleted()"
+          />
         </template>
       </tbody>
     </table>
@@ -199,9 +204,6 @@ export default class Game extends Vue {
   min-width: 51px;
   background-color: #009879;
   color: #fff;
-}
-.game tr:nth-of-type(even) {
-  background-color: #f3f3f3;
 }
 .buttons {
   text-align: left;

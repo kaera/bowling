@@ -1,5 +1,5 @@
 <template>
-  <tr>
+  <tr :class="{ highlighted: isCurrent }">
     <td>{{ name }}</td>
     <td v-for="(ref, i) in refs" :key="i">
       <Frame :index="i" :ref="ref" :refs="$refs" :allRolls="allRolls" />
@@ -19,6 +19,7 @@ import Frame from "./Frame.vue";
 })
 export default class Board extends Vue {
   @Prop() name!: string;
+  @Prop() isCurrent!: boolean;
   private currentFrameIndex = 0;
   private isMounted = false;
   private refs = [...Array(10)].map((_, i) => "frame" + i);
@@ -77,6 +78,12 @@ export default class Board extends Vue {
 </script>
 
 <style scoped>
+tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+tr.highlighted {
+  background-color: #a8d8ce;
+}
 td {
   padding: 0;
   border-right: 2px solid #d3d3d354;
