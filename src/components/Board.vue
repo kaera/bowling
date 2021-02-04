@@ -79,7 +79,10 @@ export default class Board extends Vue {
 <style scoped>
 td {
   padding: 0;
-  border: 1px solid;
+  border-right: 2px solid #d3d3d354;
   text-align: center;
+}
+td:last-child {
+  border: none;
 }
 </style>

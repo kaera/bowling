@@ -1,7 +1,11 @@
 <template>
   <div class="game">
     <form v-if="!isStarted" @submit="addPlayer($event)">
-      <input ref="input" value="John Doe" />
+      <input
+        ref="input"
+        value="John Doe"
+        @input="$event.target.classList.remove('invalid')"
+      />
       <button>Add Player</button>
     </form>
     <div v-if="isCompleted()">
@@ -23,14 +27,18 @@
       <button @click="runRandomGame()">Run Random Game</button>
     </div>
     <table>
-      <tr>
-        <th>Player Name</th>
-        <th v-for="i in 10" :key="i">{{ i }}</th>
-        <th>Total score</th>
-      </tr>
-      <template v-for="(player, i) in players">
-        <Board :key="i" :name="player.name" :ref="'board' + i" />
-      </template>
+      <thead>
+        <tr>
+          <th>Player Name</th>
+          <th v-for="i in 10" :key="i">{{ i }}</th>
+          <th>Total score</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template v-for="(player, i) in players">
+          <Board :key="i" :name="player.name" :ref="'board' + i" />
+        </template>
+      </tbody>
     </table>
   </div>
 </template>
@@ -88,6 +96,8 @@ export default class Game extends Vue {
     if (input.value && !this.players.find(({ name }) => name === input.value)) {
       this.players.push({ name: input.value, wins: 0 });
       input.value = "";
+    } else {
+      input.classList.add("invalid");
     }
   }
 
@@ -151,18 +161,47 @@ export default class Game extends Vue {
   width: 900px;
   text-align: center;
 }
+
+.game input {
+  outline: none;
+  border-color: #009879;
+  border-style: solid;
+  border-radius: 2px;
+  height: 20px;
+}
+.game input.invalid {
+  border-color: #f66;
+}
+
 .game button {
   margin: 5px 8px;
   padding: 5px 20px;
+  background-color: #009879;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+}
+.game button:hover {
+  background-color: #008166;
+}
+.game button:active,
+.game button:focus {
+  outline: none;
 }
 .game table {
-  border: 1px solid;
   border-collapse: collapse;
+  margin: 25px 0;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
 }
 .game th {
   padding: 2px 5px;
-  border: 1px solid;
   min-width: 51px;
+  background-color: #009879;
+  color: #fff;
+}
+.game tr:nth-of-type(even) {
+  background-color: #f3f3f3;
 }
 .buttons {
   text-align: left;

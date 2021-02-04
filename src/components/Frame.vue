@@ -108,7 +108,8 @@ export default class Frame extends Vue {
 }
 .score + .score {
   border-style: solid;
-  border-width: 0 0 1px 1px;
+  border-width: 0 0 2px 2px;
+  border-color: #d3d3d354;
 }
 .total {
   height: 25px;
